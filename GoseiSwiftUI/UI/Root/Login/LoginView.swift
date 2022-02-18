@@ -11,10 +11,7 @@ struct LoginView: View {
     
     @Binding var rootContentState: RootView.ContentState
     
-    @State private var externalLoginSheet: ExternalLoginType? = nil
-    @State private var showingSignUp = false
-    
-    var onShowMain: EmptyCallback?
+    @StateObject private var viewModel = LoginViewModel()
     
     var body: some View {
         NavigationView {
@@ -34,21 +31,7 @@ struct LoginView: View {
                 TextSeparator(Localizable.or.localized.uppercased())
                     .padding(.vertical)
                 
-                VStack(alignment: .leading) {
-    //                InputField($viewModel.email, hint: Localizable.email.localized.capitalized)
-    //                    .frame(height: 60)
-                    Rectangle()
-                        .fill(Color.facebookBlue)
-                        .frame(height: 60)
-                    
-    //                PasswordField($viewModel.password)
-    //                    .frame(height: 60)
-                    Rectangle()
-                        .fill(Color.facebookBlue)
-                        .frame(height: 60)
-                    
-                    invalidCredentialsLabel
-                }
+                form
                 
                 loginButton
                     .padding(.vertical)
@@ -58,16 +41,18 @@ struct LoginView: View {
                 
                 Spacer(minLength: 10)
                 
-                NavigationLink(destination: SignupView(onSignUp: onShowMain), isActive: $showingSignUp) { EmptyView() }
+                NavigationLink(destination: SignupView($rootContentState), isActive: $viewModel.showingSignUp)
             }
             .padding(.horizontal, 20)
-            .background(Color.lightGray)
-            .sheet(item: $externalLoginSheet) { type in
+            .fullScreenCover(item: $viewModel.externalLoginSheet) { type in
                 externalLoginSheet(type)
             }
-            
             .navigationBarBackButtonHidden(true)
         }
+    }
+    
+    init(_ rootContentState: Binding<RootView.ContentState>) {
+        self._rootContentState = rootContentState
     }
 }
 
@@ -75,11 +60,35 @@ private extension LoginView {
     
     var externalLoginButtons: some View {
         HStack(spacing: 20) {
-            externalLoginButton(.google)
+            ExternalAccountButton(.google) {
+                viewModel.openExternalLoginSheet(.google)
+            }
             
-            externalLoginButton(.facebook)
+            ExternalAccountButton(.facebook) {
+                viewModel.openExternalLoginSheet(.facebook)
+            }
             
-            externalLoginButton(.apple)
+            ExternalAccountButton(.apple) {
+                viewModel.openExternalLoginSheet(.apple)
+            }
+        }
+    }
+    
+    var form: some View {
+        VStack(alignment: .leading) {
+            //                InputField($viewModel.email, hint: Localizable.email.localized.capitalized)
+            //                    .frame(height: 60)
+            Rectangle()
+                .fill(Color.facebookBlue)
+                .frame(height: 60)
+            
+            //                PasswordField($viewModel.password)
+            //                    .frame(height: 60)
+            Rectangle()
+                .fill(Color.facebookBlue)
+                .frame(height: 60)
+            
+            invalidCredentialsLabel
         }
     }
     
@@ -88,7 +97,7 @@ private extension LoginView {
             .multilineTextAlignment(.leading)
             .font(.system(size: 10))
             .foregroundColor(.red)
-//            .isHidden(!viewModel.areCredidentialsInvalid)
+            .isVisible(viewModel.areCredidentialsInvalid)
     }
     
     var loginButton: some View {
@@ -102,7 +111,7 @@ private extension LoginView {
         }
         .frame(height: 60)
         .onTapGesture {
-            rootContentState = .login
+            rootContentState = .main
         }
     }
     
@@ -117,72 +126,39 @@ private extension LoginView {
         }
         .multilineTextAlignment(.center)
         .onTapGesture {
-            self.showingSignUp = true
+            viewModel.goToSignup()
         }
     }
 }
 
 private extension LoginView {
     
-    func externalLoginButton(_ type: ExternalLoginType) -> some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 6)
-                .fill(Color.background)
-            
-            type.logoImage
-                .resizable()
-                .scaledToFit()
-                .shadow(color: Color.text.opacity(0.2), radius: 5, x: 3, y: 3)
-                .frame(size: 40 / 2)
-        }
-        .frame(size: 40)
-        .shadow(color: Color.text.opacity(0.2), radius: 5, x: 3, y: 3)
-        .onTapGesture {
-            self.externalLoginSheet = type
-        }
-    }
-    
-    func externalLoginSheet(_ type: ExternalLoginType) -> some View {
-        let foregroundColor: Color
-        let backgroundColor: Color
-        
-        switch (type) {
-        case .google:
-            foregroundColor = .black
-            backgroundColor = .white
-        case .facebook:
-            foregroundColor = .white
-            backgroundColor = .facebookBlue
-        case .apple:
-            foregroundColor = .white
-            backgroundColor = .black
-        }
-        
-        return VStack(spacing: 20) {
+    func externalLoginSheet(_ type: ExternalAccountType) -> some View {
+        VStack(spacing: 20) {
             Text("\(type.rawValue) \(Localizable.login_is_not_implemented.localized)")
                 .font(.playfair(22, .bold))
-                .foregroundColor(foregroundColor)
+                .foregroundColor(type.foregroundColor)
             
-                 Text(Localizable.close.localized.capitalized)
+            Text(Localizable.close.localized.capitalized)
                 .font(.workSans(16, .bold))
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    self.externalLoginSheet = nil
+                    viewModel.closeExternalLoginSheet()
                 }
                 .padding(5)
                 .padding(.horizontal, 10)
-                .foregroundColor(backgroundColor)
-                .background(Capsule().fill(foregroundColor))
+                .foregroundColor(type.backgroundColor)
+                .background(Capsule().fill(type.foregroundColor))
         }
         .padding(.horizontal, 50)
         .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center )
-        .background(backgroundColor)
+        .background(type.backgroundColor)
     }
 }
 
 struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
-        LoginView(rootContentState: .constant(.login))
+        LoginView(.constant(.login))
     }
 }

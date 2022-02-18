@@ -40,16 +40,18 @@ private extension LoadingIndicator {
     func animate() {
         guard isAnimating else { return }
         
-        withAnimation(Animation.easeOut(duration: 0.5)) {
-            angle -= 30
-        }
-        
-        withAnimation(.easeOut(duration: 1.5).delay(0.5)) {
-            angle += 360 + 30
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-            animate()
+        DispatchQueue.main.async {
+            withAnimation(Animation.easeOut(duration: 0.5)) {
+                angle -= 30
+            }
+            
+            withAnimation(.easeOut(duration: 1.5).delay(0.5)) {
+                angle += 360 + 30
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                animate()
+            }
         }
     }
 }

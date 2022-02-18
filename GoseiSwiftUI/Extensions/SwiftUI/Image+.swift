@@ -20,7 +20,11 @@ extension Image {
         case logo_gosei
         case logo_apple
         case icon_avatar
-        case icon_arrowLeft
+        case icon_arrow_left
+        case icon_tab_home
+        case icon_tab_search
+        case icon_tab_wishlist
+        case icon_tab_cart
     }
 }
 

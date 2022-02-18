@@ -9,7 +9,7 @@ import Foundation
 
 protocol PersistenceServiceProtocol: AnyObject {
     
-//    var user: PersistenceData.User? { get set }
+    var user: PersistenceData.User? { get set }
     var langauge: PersistenceData.Language? { get set }
     var colorScheme: PersistenceData.ColorScheme { get set }
     

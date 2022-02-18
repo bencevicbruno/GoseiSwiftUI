@@ -9,19 +9,19 @@ import SwiftUI
 
 struct LaunchView: View {
     
-    @State private var trianglesOffset = 0.0
+    @State private var isAnimating = false
     
     var body: some View {
         GeometryReader { geo in
             ZStack {
                 VStack {
                     topTriangle(geo)
-                        .offset(x: 0, y: -trianglesOffset)
+                        .offset(x: 0, y: -triangleOffset)
                     
                     loadingView
                     
                     bottomTriangle(geo)
-                        .offset(x: 0, y: trianglesOffset)
+                        .offset(x: 0, y: triangleOffset)
                 }
                 
                 Image(.logo_gosei)
@@ -30,11 +30,9 @@ struct LaunchView: View {
                     .padding(.horizontal, 50)
             }
             .onAppear {
-                trianglesOffset = triangleSize(geo)
-                
                 DispatchQueue.main.async {
-                    withAnimation(Animation.easeOut(duration: 0.5)) {
-                        trianglesOffset = 0.0
+                    withAnimation(.easeOut(duration: 0.5)) {
+                        isAnimating = true
                     }
                 }
             }
@@ -45,6 +43,10 @@ struct LaunchView: View {
 }
 
 private extension LaunchView {
+    
+    var triangleOffset: CGFloat {
+        isAnimating ? 0 : UIScreen.main.bounds.width * 0.5
+    }
     
     func topTriangle(_ geo: GeometryProxy) -> some View {
         HStack {

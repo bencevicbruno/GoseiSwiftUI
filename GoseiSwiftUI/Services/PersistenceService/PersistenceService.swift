@@ -9,6 +9,15 @@ import Foundation
 
 final class PersistenceService: PersistenceServiceProtocol {
     
+    var user: PersistenceData.User? {
+        get {
+            return UserDefaults.load(key: .user)
+        }
+        set {
+            UserDefaults.save(newValue, key: .user)
+        }
+    }
+    
     var langauge: PersistenceData.Language? {
         get {
             return UserDefaults.load(key: .language)
