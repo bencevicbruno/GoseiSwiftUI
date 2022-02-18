@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "fusion",
+        "repositoryURL": "https://github.com/alchemy-swift/fusion",
+        "state": {
+          "branch": "main",
+          "revision": "3e37976c042d10406ddc738c1c88c6be45fb9de8",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
