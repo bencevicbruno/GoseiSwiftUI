@@ -14,23 +14,18 @@ struct RootView: View {
     
     @Inject private var persistenceService: PersistenceServiceProtocol
     
-    @ViewBuilder
+//    @ViewBuilder
     var body: some View {
-        Group {
-            switch(contentState) {
-            case .launch:
-                LaunchView()
-                    .onAppear {
-                        setup()
-                    }
-            case .login:
-                LoginView($contentState)
-            case .main:
-                MainView()
-            }
-        }
-        .onAppear {
-            setup()
+        switch(contentState) {
+        case .launch:
+            LaunchView()
+                .onAppear {
+                    setup()
+                }
+        case .login:
+            LoginView($contentState)
+        case .main:
+            MainView(rootContentState: $contentState)
         }
     }
 }
@@ -45,11 +40,7 @@ extension RootView {
     
     func setup() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            if persistenceService.user != nil {
-                contentState = .main
-            } else {
-                contentState = .login
-            }
+            contentState = persistenceService.user == nil ? .login : .main
         }
     }
 }

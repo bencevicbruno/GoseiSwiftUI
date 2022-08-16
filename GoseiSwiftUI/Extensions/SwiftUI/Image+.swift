@@ -14,6 +14,8 @@ extension Image {
     enum Asset {
         case logo_facebook
         case logo_google
+        case icon_x_lightGray
+        case logo_visa
     }
     
     enum SchemedAsset {
@@ -21,10 +23,19 @@ extension Image {
         case logo_apple
         case icon_avatar
         case icon_arrow_left
-        case icon_tab_home
-        case icon_tab_search
-        case icon_tab_wishlist
-        case icon_tab_cart
+        case icon_home
+        case icon_search
+        case icon_wishlist
+        case icon_cart
+        case icon_heart
+        case icon_heart_filled
+        case icon_checkmark
+        case icon_credit_card
+        case icon_truck
+        case icon_x
+        case icon_slash
+        
+        case ilustration_checkout_successful
     }
 }
 

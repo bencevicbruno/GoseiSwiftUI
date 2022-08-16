@@ -111,6 +111,7 @@ private extension LoginView {
         }
         .frame(height: 60)
         .onTapGesture {
+            viewModel.saveUserInfo()
             rootContentState = .main
         }
     }

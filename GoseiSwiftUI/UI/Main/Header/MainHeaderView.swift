@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import Fusion
 
 struct MainHeaderView: View {
     
     @Binding var isHamburgerMenuVisible: Bool
-    private var avatarURL: URL?
     private var onAvatarTapped: EmptyCallback?
+    
+    @Inject var persistenceService: PersistenceServiceProtocol
     
     var body: some View {
         HStack {
@@ -34,9 +36,8 @@ struct MainHeaderView: View {
     }
     
     
-    init(isHamburgerMenuVisible: Binding<Bool>, avatarURL: URL? = nil, onAvatarTapped: EmptyCallback? = nil) {
+    init(isHamburgerMenuVisible: Binding<Bool>, onAvatarTapped: EmptyCallback? = nil) {
         self._isHamburgerMenuVisible = isHamburgerMenuVisible
-        self.avatarURL = avatarURL
         self.onAvatarTapped = onAvatarTapped
     }
     
@@ -46,7 +47,7 @@ struct MainHeaderView: View {
 private extension MainHeaderView {
     
     var avatar: some View {
-        AsyncImage(url: avatarURL) { image in
+        AsyncImage(url: persistenceService.user?.avatarURL) { image in
             image
                 .resizable()
                 .scaledToFit()

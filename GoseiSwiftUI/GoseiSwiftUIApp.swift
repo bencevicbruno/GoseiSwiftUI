@@ -18,11 +18,7 @@ struct GoseiSwiftUIApp: App {
     
     var body: some Scene {
         WindowGroup {
-            NavigationView {
-                RootView()
-                    .navigationBarHidden(true)
-                    .navigationTitle("")
-            }
+            RootView()
         }
     }
 }

@@ -9,8 +9,13 @@ import SwiftUI
 
 extension View {
     
+    @ViewBuilder
     func frame(size: CGFloat) -> some View {
-        self.frame(width: size, height: size)
+        if size == .infinity {
+            self.frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
+            self.frame(width: size, height: size)
+        }
     }
     
     func isHidden(_ isHidden: Bool) -> some View {
@@ -19,6 +24,12 @@ extension View {
     
     func isVisible(_ isVisible: Bool) -> some View {
         self.opacity(isVisible ? 1 : 0)
+    }
+    
+    func removeNavigationBar() -> some View {
+        self.navigationBarHidden(true)
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
     }
 }
 

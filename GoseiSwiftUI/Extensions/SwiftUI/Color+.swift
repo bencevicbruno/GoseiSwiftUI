@@ -16,9 +16,15 @@ extension Color {
     static let facebookBlue = Color(66, 103, 178)
     
     static let lightGray = Color(uiColor: UIColor.lightGray)
+    static let gray241 = Color(241, 241, 241)
+    static var gray21 = Color(21, 21, 21)
     
     static var background: Color {
         return lightMode ? .white : .black
+    }
+    
+    static var backgroundAccent: Color {
+        lightMode ? gray241 : gray21
     }
     
     static var text: Color {

@@ -24,13 +24,13 @@ enum Tab: Identifiable, CaseIterable {
     var image: Image {
         switch(self) {
         case .home:
-            return Image(.icon_tab_home)
+            return Image(.icon_home)
         case .search:
-            return Image(.icon_tab_search)
+            return Image(.icon_search)
         case .wishlist:
-            return Image(.icon_tab_wishlist)
+            return Image(.icon_wishlist)
         case .cart:
-            return Image(.icon_tab_cart)
+            return Image(.icon_cart)
         }
     }
 }

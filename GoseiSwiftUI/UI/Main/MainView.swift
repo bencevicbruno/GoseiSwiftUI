@@ -9,53 +9,73 @@ import SwiftUI
 
 struct MainView: View {
     
+    @Binding var rootContentState: RootView.ContentState
+    
     @State private var isHamburgerMenuVisible = false
     @State private var isSignOutDIalogVisible = false
+    @State private var currentTab: Tab = .home
+    @State private var isTabBarVisible = true
     
     var body: some View {
-        VStack {
-            MainHeaderView(isHamburgerMenuVisible: $isHamburgerMenuVisible, avatarURL: nil, onAvatarTapped: nil)
-            
-            ZStack(alignment: .top) {
-                content
+        NavigationView {
+            VStack {
+                MainHeaderView(isHamburgerMenuVisible: $isHamburgerMenuVisible, onAvatarTapped: nil)
                 
-//                tabBar
-//                    .padding(.bottom, 10)
-                
-                HamburgerMenu($isHamburgerMenuVisible) { index in
-                    hamburgerItemTapped(index)
+                ZStack(alignment: .top) {
+                    content
+                    
+                    tabBar
+                        .padding(.bottom, 10)
+                    
+                    HamburgerMenu($isHamburgerMenuVisible) { index in
+                        hamburgerItemTapped(index)
+                    }
                 }
             }
-            
-//                NavigationLink(destination: LoginView(), isActive: $showingLogin) { EmptyView() }
+            .confirmationDialog(isShowing: isSignOutDIalogVisible, title: Localizable.sign_out.localized, description: Localizable.sign_out_message.localized, confirmTitle: Localizable.sign_out.localized, onDismissed: {} , onConfirmed: {
+                self.goToLogin()
+            })
+            .navigationViewStyle(.stack)
+            .removeNavigationBar()
         }
-        .confirmationDialog(isShowing: isSignOutDIalogVisible, title: Localizable.sign_out.localized, description: Localizable.sign_out_message.localized, confirmTitle: Localizable.sign_out.localized, onDismissed: {} , onConfirmed: {
-            self.goToLogin()
-        })
     }
 }
 
 private extension MainView {
     
     func goToLogin() {
-       
-        withAnimation {
-            isHamburgerMenuVisible = false
-            isSignOutDIalogVisible = false
-        }
+        self.rootContentState = .login
     }
     
     var content: some View {
+        TabView(selection: $currentTab) {
+            HomeView()
+                .tag(Tab.home)
+            
+            SearchView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .tag(Tab.search)
+            
+            WishlistView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .tag(Tab.wishlist)
+            
+            CartView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .tag(Tab.cart)
+        }
+    }
+    
+    var tabBar: some View {
         VStack {
             Spacer()
             
-            Text("hihi hohi")
-                .foregroundColor(.red)
-                .padding(100)
-                .background(.blue)
+            TabBar(currentTab: $currentTab)
+                .shadow(radius: 5)
+                .offset(x: 0, y: isTabBarVisible ? 0 : 2 * TabBar.height)
             
-            Spacer()
         }
+        .padding(.horizontal, 10)
     }
     
     func hamburgerItemTapped(_ index: Int) {
@@ -67,6 +87,6 @@ private extension MainView {
 
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
-        MainView()
+        MainView(rootContentState: .constant(.main))
     }
 }
